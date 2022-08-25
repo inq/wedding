@@ -31,6 +31,9 @@
         background: #fff;
         text-align: center;
       }
+      a {
+        color: black;
+      }
       h1, h2, h3 {
         font-family: 'DungGeunMo';
         font-weight: normal;
@@ -90,8 +93,8 @@
 
         e.fb.fillStyle = 'rgba(255, 255, 255, 0.7)'
         e.fb.clearRect(0, 0, c.width, c.height)
-        e.fb.fillRect(0, 0, c.width, c.height)
-        e.fb.drawImage(e.sb, 0, 11 * c.hh, c.width, 30, 0, 80 + 10, c.width, 30)
+        e.fb.fillRect(0, 0, c.width, c.height - 12)
+        e.fb.drawImage(e.sb, 0, 11 * c.hh, c.width, c.height, 0, 70 + 10, c.width, c.height)
         switch (true) {
           case ([0].includes(ps.scene)): {  // 0: Entrance
             var xJ = c.width / 2 - c.dx.d
@@ -189,7 +192,7 @@
 
       window.onload = function() {
         const c = {
-          offsetUnit: 500,
+          offsetUnit: 1000,
           maxScene: 4,
           width: 320,
           height: 120,
@@ -197,7 +200,7 @@
           uh: 48,
           hw: 16,
           hh: 24,
-          ground: 74 + 10,
+          ground: 64 + 10,
           timeUnit: 10,
           sg: {
             0: 0,
@@ -243,11 +246,11 @@
     <h1>이인규 <span class='heart'>♥</span> 인지은</h1>
     <h2>2022년 9월 24일 <span class='sat'>토요일</span> 12시 30분</h2>
     <h2>
-      그랜드 하얏트 서울, 2층 남산룸 <a href='https://place.map.kakao.com/18661190'><img src='k.png' style='width: 1em;'></a>
+      <a href='https://place.map.kakao.com/18661190'>그랜드 하얏트 서울, 2층 남산룸 <img src='k.png' style='width: 1em;'></a>
     </h2>
     <h3>서울시 용산구 한남동 소월로 322</h3>
 
-    <div style='text-align: left; padding: 2em;'>
+    <div style='display: inline-block; text-align: left; padding: 2em;'>
       <p>
         세상 어디든<br>
         손잡고 함께 걷기로 하였습니다.
@@ -264,6 +267,10 @@
 
     </div>
 
+    <p style="color: #ee9999;">
+      🥀 화환은 정중히 사양합니다.
+    </p>
+
     <canvas id='fb'></canvas>
 
     <p><img src='1.jpg' class='photo'></p>
@@ -279,6 +286,12 @@
     <p><img src='11.jpg' class='photo'></p>
     <p><img src='12.jpg' class='photo'></p>
     <p><img src='13.jpg' class='photo'></p>
+    <p><img src='14.jpg' class='photo'></p>
+    <p><img src='15.jpg' class='photo'></p>
+    <p><img src='16.jpg' class='photo'></p>
+    <p><img src='17.jpg' class='photo'></p>
+    <p><img src='18.jpg' class='photo'></p>
+    <p><img src='19.jpg' class='photo'></p>
     <img src='sprite.png' id='sprite'>
   </body>
 </html>
