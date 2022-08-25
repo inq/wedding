@@ -58,11 +58,9 @@
         display: none;
       }
       #fb {
-        width: 100vw;
-        height: 66vw;
-        position: fixed;
-        left: 0px;
-        bottom: 0px;
+        width: 100%;
+        top: 0;
+        position: sticky;
         pointer-events: none;
       }
     </style>
@@ -73,6 +71,14 @@
         const offset = window.pageYOffset || document.documentElement.scrollTop
         const t = parseInt(((nowTs - ps.startTs) / c.timeUnit).toFixed())
 
+        /*
+        if (window.pageYOffset > e.canvas.offsetTop) {
+          e.canvas.classList.add('sticky')
+        } else {
+          e.canvas.classList.remove('sticky')
+        }
+        */
+
         var s = {
           entranced: ps.entranced,
           scene: Math.min(parseInt(offset / c.offsetUnit), c.maxScene),
@@ -81,8 +87,10 @@
         s.startTs = c.sg[s.scene] != c.sg[ps.scene] ? nowTs : ps.startTs
         s.hearts = c.sg[s.scene] == c.sg[ps.scene] ? [...ps.hearts] : []
 
-        e.fb.clearRect(0, 0, c.width, c.height);
-        e.fb.drawImage(e.sb, 0, 11 * c.hh, c.width, 30, 0, 200 + 10, c.width, 30)
+        e.fb.fillStyle = '#fff'
+        e.fb.clearRect(0, 0, c.width, c.height)
+        e.fb.fillRect(0, 0, c.width, c.height)
+        e.fb.drawImage(e.sb, 0, 11 * c.hh, c.width, 30, 0, 80 + 10, c.width, 30)
         switch (true) {
           case ([0].includes(ps.scene)): {  // 0: Entrance
             var xJ = c.width / 2 - c.dx.d
@@ -183,12 +191,12 @@
           offsetUnit: 500,
           maxScene: 4,
           width: 320,
-          height: 240,
+          height: 120,
           uw: 32,
           uh: 48,
           hw: 16,
           hh: 24,
-          ground: 194 + 10,
+          ground: 74 + 10,
           timeUnit: 10,
           sg: {
             0: 0,
@@ -199,7 +207,7 @@
           },
           dx: {
             d: 14,
-            ay: 60,
+            ay: 0,
           },
           dt: {
             entrance: 100,
@@ -214,6 +222,7 @@
         fb.imageSmoothingEnabled = false
         requestAnimationFrame(function() {
           render({
+            canvas: canvas,
             sb: document.getElementById('sprite'),
             fb: fb,
           }, {
@@ -251,7 +260,10 @@
         아름답게 영글어가는 모습으로<br>
         보답하겠습니다.
       </p>
+
     </div>
+
+    <canvas id='fb'></canvas>
 
     <p><img src='1.jpg' class='photo'></p>
     <p><img src='2.jpg' class='photo'></p>
@@ -267,6 +279,5 @@
     <p><img src='12.jpg' class='photo'></p>
     <p><img src='13.jpg' class='photo'></p>
     <img src='sprite.png' id='sprite'>
-    <canvas id='fb' />
   </body>
 </html>
