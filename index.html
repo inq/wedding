@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      /* https://hbios.quiple.dev */
+      @font-face {
+        font-family: 'HBIOS-SYS';
+        src: url('hbios-sys.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+      }
+      /* https://cactus.tistory.com/193 */
+      @font-face {
+        font-family: 'DungGeunMo';
+        src: url('dgm.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+      }
+      html, body {
+        margin: 0;
+        padding: 10px;
+        background: #fff;
+        text-align: center;
+      }
+      h1, h2, h3 {
+        font-family: 'DungGeunMo';
+        font-weight: normal;
+      }
+      h1 {
+        font-size: 2em;
+      }
+      h2 {
+        font-size: 1.1em;
+      }
+      h3 {
+        font-size: 1em;
+      }
+      p {
+        font-family: 'HBIOS-SYS';
+        color: #666;
+        font-size: 1em;
+      }
+      span.heart {
+        color: red;
+      }
+      span.sat {
+        color: blue;
+      }
+      p.spacer {
+        margin-bottom: 4em;
+      }
+      img.photo {
+        width: 80vw;
+      }
+      #sprite {
+        display: none;
+      }
+      #fb {
+        width: 100vw;
+        height: 66vw;
+        position: fixed;
+        left: 0px;
+        bottom: 0px;
+        pointer-events: none;
+      }
+    </style>
+    <script type='text/javascript'>
+      //<![CDATA[
+      function render(e, ps, c) {
+        const nowTs = performance.now()
+        const offset = window.pageYOffset || document.documentElement.scrollTop
+        const t = parseInt(((nowTs - ps.startTs) / c.timeUnit).toFixed())
+
+        var s = {
+          entranced: ps.entranced,
+          scene: Math.min(parseInt(offset / c.offsetUnit), c.maxScene),
+          jumpedTss: [...ps.jumpedTss],
+        }
+        s.startTs = c.sg[s.scene] != c.sg[ps.scene] ? nowTs : ps.startTs
+        s.hearts = c.sg[s.scene] == c.sg[ps.scene] ? [...ps.hearts] : []
+
+        e.fb.clearRect(0, 0, c.width, c.height);
+        e.fb.drawImage(e.sb, 0, 11 * c.hh, c.width, 30, 0, 200 + 10, c.width, 30)
+        switch (true) {
+          case ([0].includes(ps.scene)): {  // 0: Entrance
+            var xJ = c.width / 2 - c.dx.d
+            if (!ps.entranced) {
+              if (t > c.dt.entrance) {
+                s.entranced = true
+              } else {
+                xJ = (Math.sqrt(t / c.dt.entrance) * c.width / 2) - c.dx.d
+                s.entranced = false
+              }
+            }
+            const xQ = c.width - xJ
+            var yQ = c.ground - c.hh
+            var yJ = c.ground - c.hh
+            if (ps.entranced) {
+              e.fb.drawImage(e.sb, 0, 0, c.uw, c.uh, xJ - c.hw, yJ, c.uw, c.uh)
+              e.fb.drawImage(e.sb, 0, 2 * c.uh, c.uw, c.uh, xQ - c.hw, yQ, c.uw, c.uh)
+            } else {
+              e.fb.drawImage(e.sb, 4 * c.uw + (t % 40 > 20 ? c.uw : 0), 0 * c.uh, c.uw, c.uh, xJ - c.hw, yJ, c.uw, c.uh)
+              e.fb.drawImage(e.sb, 4 * c.uw + (t % 40 > 20 ? c.uw : 0), 2 * c.uh, c.uw, c.uh, xQ - c.hw, yQ, c.uw, c.uh)
+            }
+            break
+          }
+          case ([1, 2].includes(ps.scene)): {  // 1, 2: Transform
+            let x = c.width / 2 - c.dx.d
+            let y = c.ground - c.hh
+            var a = 0
+            if (t % 20 > 15) {
+              a = 2
+            } else if (t % 20 > 10) {
+              a = 3
+            } else if (t % 20 > 5) {
+              a = 1
+            }
+            const oh = ps.scene == 2 ? c.uh : 0
+            e.fb.drawImage(e.sb, a * c.uw, oh, c.uw, c.uh, x - c.hw, y, c.uw, c.uh)
+            e.fb.drawImage(e.sb, a * c.uw, oh + 2 * c.uh, c.uw, c.uh, c.width - c.hw - x, y, c.uw, c.uh)
+            break
+          }
+          case ([3, 4].includes(ps.scene)): {  // 3: Angels, 4: Jumps + Hearts
+            let x = c.width / 2 - c.dx.d
+            var ys = [c.ground - c.hh, c.ground - c.hh]
+            if (ps.scene == 4) {  // 4: Jumps
+              for (const i in ps.jumpedTss) {
+                const ts = ps.jumpedTss[i]
+                if (ts !== null) {
+                  let tt = parseInt(((nowTs - ts) / 10).toFixed())
+                  let dy = 5 * tt - 0.1 * (tt * tt)
+                  if (dy < 0) {
+                    s.jumpedTss[i] = null
+                  } else {
+                    ys[i] -= dy
+                  }
+                } else {
+                  if (t % c.dt.jumps[i] < 7) {
+                    s.jumpedTss[i] = nowTs
+                  }
+                }
+              }
+            }
+            let offset = (ps.scene > 1) ? c.uh : 0
+            e.fb.drawImage(e.sb, 0, offset, c.uw, c.uh, x - c.hw, ys[0], c.uw, c.uh)
+            e.fb.drawImage(e.sb, 0, 3 * c.uw + offset, c.uw, c.uh, c.width - c.hw - x, ys[1], c.uw, c.uh)
+
+            for(var o = 0; o <= 40 && o <= t / 10; o += 4) {
+              let x = c.width / 2 + Math.sin((t / 2 + o * 11) / 80) * 100
+              let y = c.dx.ay + Math.sin((t / 2 + o * 11) / 40) * 10
+              e.fb.drawImage(e.sb, (t % 40 > 20 ? c.uw : 0) + (x < (c.width / 2) ? 2 * c.uw : 0), 4 * c.uh, c.uw, c.uh, x - c.hw, y, c.uw, c.uh)
+
+              if (t % 1000 < 10 || s.hearts[o / 4] === undefined) {
+                s.hearts[o / 4] = {x: x, y: y + Math.random() * 20}
+              }
+            }
+
+            if (ps.scene == 4) {
+              for(let heart of s.hearts) {
+                var dx = Math.sin(t / 6) * 2
+                let dy = Math.cos(t / 2) * 1
+                var y = heart.y + ((t / 2) % 100) * 2 + dy
+                if (y > c.ground + 5) {
+                  y = c.ground + 5
+                  dx = 0
+                }
+                e.fb.drawImage(e.sb, 0, c.uh * 5, c.hw, c.hw, heart.x + dx - 4, y, c.hw, c.hw);
+              }
+            }
+            break
+          }
+        }
+
+        requestAnimationFrame(function() {
+          render(e, s, c)
+        })
+      }
+
+      window.onload = function() {
+        const c = {
+          offsetUnit: 500,
+          maxScene: 4,
+          width: 320,
+          height: 240,
+          uw: 32,
+          uh: 48,
+          hw: 16,
+          hh: 24,
+          ground: 194 + 10,
+          timeUnit: 10,
+          sg: {
+            0: 0,
+            1: 1,
+            2: 2,
+            3: 3,
+            4: 3,
+          },
+          dx: {
+            d: 14,
+            ay: 60,
+          },
+          dt: {
+            entrance: 100,
+            jumps: [300, 400],
+          }
+        }
+        const canvas = document.getElementById('fb');
+        canvas.width = c.width;
+        canvas.height = c.height;
+        const fb = canvas.getContext('2d');
+        fb.clearRect(0, 0, c.width, c.height);
+        fb.imageSmoothingEnabled = false
+        requestAnimationFrame(function() {
+          render({
+            sb: document.getElementById('sprite'),
+            fb: fb,
+          }, {
+            startTs: performance.now(),
+            hearts: [],
+            scene: -1,
+            jumpedTss: [null, null],
+            entranced: false,
+          },
+          c)
+        });
+      }
+      //]]>
+    </script>
+  </head>
+  <body>
+    <h1>인규 <span class='heart'>♥</span> 지은</h1>
+    <h2>2022년 9월 24일 <span class='sat'>토요일</span> 12시 30분</h2>
+    <h2>
+      그랜드 하얏트 서울, 2층 남산룸 <a href='https://place.map.kakao.com/18661190'><img src='k.png' style='width: 1em;'></a>
+    </h2>
+    <h3>서울시 용산구 한남동 소월로 322</h3>
+
+    <div style='text-align: left; padding: 2em;'>
+      <p>
+        세상 어디든<br>
+        손잡고 함께 걷기로 하였습니다.
+      </p>
+      <p>
+        바쁘신 시간을 잠깐 할애하여<br>
+        저희를 축복해 주신다면
+      </p>
+      <p>
+        오랜 시간을 벗 삼아<br>
+        아름답게 영글어가는 모습으로<br>
+        보답하겠습니다.
+      </p>
+    </div>
+
+    <p><img src='1.jpg' class='photo'></p>
+    <p><img src='2.jpg' class='photo'></p>
+    <p><img src='3.jpg' class='photo'></p>
+    <p><img src='4.jpg' class='photo'></p>
+    <p><img src='5.jpg' class='photo'></p>
+    <p><img src='6.jpg' class='photo'></p>
+    <p><img src='7.jpg' class='photo'></p>
+    <p><img src='8.jpg' class='photo'></p>
+    <p><img src='9.jpg' class='photo'></p>
+    <p><img src='10.jpg' class='photo'></p>
+    <p><img src='11.jpg' class='photo'></p>
+    <p><img src='12.jpg' class='photo'></p>
+    <p><img src='13.jpg' class='photo'></p>
+    <img src='sprite.png' id='sprite'>
+    <canvas id='fb' />
+  </body>
+</html>
