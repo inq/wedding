@@ -2,6 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+
+    <meta property="og:url" content="https://inkyu.com/wedding">
+    <meta property="og:title" content="이인규 ♥ 인지은 0924">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://inkyu.com/wedding/7.jpg">
+    <meta property="og:description" content="이인규 ♥ 인지은 0924">
+
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
       /* https://hbios.quiple.dev */
@@ -27,6 +34,7 @@
       h1, h2, h3 {
         font-family: 'DungGeunMo';
         font-weight: normal;
+        line-height: 1.5;
       }
       h1 {
         font-size: 2em;
@@ -41,6 +49,7 @@
         font-family: 'HBIOS-SYS';
         color: #666;
         font-size: 1em;
+        line-height: 1.5;
       }
       span.heart {
         color: red;
@@ -71,14 +80,6 @@
         const offset = window.pageYOffset || document.documentElement.scrollTop
         const t = parseInt(((nowTs - ps.startTs) / c.timeUnit).toFixed())
 
-        /*
-        if (window.pageYOffset > e.canvas.offsetTop) {
-          e.canvas.classList.add('sticky')
-        } else {
-          e.canvas.classList.remove('sticky')
-        }
-        */
-
         var s = {
           entranced: ps.entranced,
           scene: Math.min(parseInt(offset / c.offsetUnit), c.maxScene),
@@ -87,7 +88,7 @@
         s.startTs = c.sg[s.scene] != c.sg[ps.scene] ? nowTs : ps.startTs
         s.hearts = c.sg[s.scene] == c.sg[ps.scene] ? [...ps.hearts] : []
 
-        e.fb.fillStyle = '#fff'
+        e.fb.fillStyle = 'rgba(255, 255, 255, 0.7)'
         e.fb.clearRect(0, 0, c.width, c.height)
         e.fb.fillRect(0, 0, c.width, c.height)
         e.fb.drawImage(e.sb, 0, 11 * c.hh, c.width, 30, 0, 80 + 10, c.width, 30)
@@ -239,7 +240,7 @@
     </script>
   </head>
   <body>
-    <h1>인규 <span class='heart'>♥</span> 지은</h1>
+    <h1>이인규 <span class='heart'>♥</span> 인지은</h1>
     <h2>2022년 9월 24일 <span class='sat'>토요일</span> 12시 30분</h2>
     <h2>
       그랜드 하얏트 서울, 2층 남산룸 <a href='https://place.map.kakao.com/18661190'><img src='k.png' style='width: 1em;'></a>
